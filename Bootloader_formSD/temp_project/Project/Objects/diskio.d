@@ -46,3 +46,4 @@
 .\objects\diskio.o: ..\User\FATFS\ffconf.h
 .\objects\diskio.o: ..\User\SDIO_Drive\bsp_sdio_sdcard.h
 .\objects\diskio.o: ..\User\USART_Dirve\USART_Dirve.h
+.\objects\diskio.o: ..\User\TIM_Dirve\TIM_Dirve.h

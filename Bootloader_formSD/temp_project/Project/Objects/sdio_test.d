@@ -45,3 +45,4 @@
 .\objects\sdio_test.o: ..\User\FATFS\ffconf.h
 .\objects\sdio_test.o: ..\User\SDIO_Drive\bsp_sdio_sdcard.h
 .\objects\sdio_test.o: ..\User\USART_Dirve\USART_Dirve.h
+.\objects\sdio_test.o: ..\User\TIM_Dirve\TIM_Dirve.h
