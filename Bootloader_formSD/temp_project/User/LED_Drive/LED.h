@@ -5,6 +5,10 @@
 
 #define LED_R_PIN  GPIO_Pin_5
 #define LED_R_RORT  GPIOB
+
+#define LED_G_PIN  GPIO_Pin_0
+#define LED_G_RORT  GPIOB
+
 #define LED_R_RCC  RCC_APB2Periph_GPIOB
 
 #define ON  1

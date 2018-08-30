@@ -9,6 +9,7 @@ void LED_R_Config(void)
 	GPIO_LED.GPIO_Pin = LED_R_PIN;
 	GPIO_LED.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_LED.GPIO_Mode = GPIO_Mode_Out_PP;
-	
 	GPIO_Init(LED_R_RORT,&GPIO_LED);	
+	GPIO_LED.GPIO_Pin = LED_G_PIN;
+	GPIO_Init(LED_G_RORT,&GPIO_LED);
 }

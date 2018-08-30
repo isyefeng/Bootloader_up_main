@@ -12,3 +12,29 @@ void Key1_Init(void)
 	
 	GPIO_Init(GPIO_KEY1_RORT,&KEY1_Initstruct);	
 }
+
+uint8_t Key1_Read(void)
+{
+	static uint8_t dat = 0;
+	static uint8_t temp = 2;
+	
+	if(GPIO_ReadInputDataBit(GPIO_KEY1_RORT,GPIO_KEY1_PIN))
+	{
+		if(temp == 2)
+		{
+			dat = 1;
+			temp--;
+		}
+		else if(temp == 1)
+		{
+			temp = 1;
+		} 
+	}
+	else
+	{
+		temp = 2;
+		dat = 0;
+	}
+	
+	return dat;
+}

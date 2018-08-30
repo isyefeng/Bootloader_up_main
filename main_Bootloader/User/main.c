@@ -6,6 +6,8 @@
 
 #define 		BlockSize				2048
 
+uint8_t x;
+
 void delay(unsigned int time)
 {
 	unsigned int i;

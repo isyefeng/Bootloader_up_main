@@ -46,3 +46,4 @@
 .\objects\bsp_sdio_sdcard.o: ..\User\FATFS\ffconf.h
 .\objects\bsp_sdio_sdcard.o: ..\User\USART_Dirve\USART_Dirve.h
 .\objects\bsp_sdio_sdcard.o: ..\User\TIM_Dirve\TIM_Dirve.h
+.\objects\bsp_sdio_sdcard.o: ..\User\BUZ_Drive\BUZ_Dirve.h

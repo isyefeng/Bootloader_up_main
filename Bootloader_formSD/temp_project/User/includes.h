@@ -24,6 +24,9 @@
 #include "bsp_sdio_sdcard.h"
 #include "USART_Dirve.h"
 #include "TIM_Dirve.h"
+#include "BUZ_Dirve.h"
+
+void Resource_release(void);
 
 #endif
 

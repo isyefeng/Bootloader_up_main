@@ -17,12 +17,31 @@ BYTE WriteBuffer[] =              /* 写缓冲区*/
 "\r\n新建文件\r\n"; 
 uint32_t flash_addr = FLASH_APP1_ADDR;
 
+//关闭所有中断(但是不包括fault和NMI中断)
+void INTX_DISABLE( void )
+{
+	__ASM volatile( "cpsid i" );
+}
+
+/*资源释放函数，如果没有释放升级程序中使用的资源，
+有可能升级过程中，遇到中断或是其他资源相应有可能
+就会升级失败*/
+void Resource_release(void)
+{
+	USART_DeInit(USART1);  //释放串口1
+	GPIO_DeInit(GPIOA);		//GPIO释放
+	GPIO_DeInit(GPIOB);
+	GPIO_DeInit(GPIOC);
+	INTX_DISABLE();	
+}
+
 void Init_Drive(void)
 {
 	LED_R_Config();
 	Key1_Init();
 	USART_Config();
 	TIMx_config();
+	BUZ_config();
 }
 
 void SD_Card_Test(void)
@@ -72,7 +91,7 @@ void SD_Card_Test(void)
 	
 /*------------------- 文件系统测试：读测试 --------------------------*/
 	printf("****** 即将进行文件读取测试... ******\r\n");
-	res_flash = f_open(&fnew, "0:up.bin",FA_OPEN_EXISTING | FA_READ); 	 
+	res_flash = f_open(&fnew, "0:up1.bin",FA_OPEN_EXISTING | FA_READ); 	 
 	if(res_flash == FR_OK)
 	{
 //		LED_GREEN;
@@ -122,7 +141,7 @@ uint8_t Erase_flash(uint8_t num_block)
 	
 	return 1;
 }
-
+/*  升级函数，向FLASH写入升级文件（bin文件）  */
 uint8_t Write_flash(uint32_t num_size,uint8_t *Data)
 {
 	uint32_t i;
@@ -137,7 +156,6 @@ uint8_t Write_flash(uint32_t num_size,uint8_t *Data)
 		Data_buff = *Data;
 		Data_SD |= Data_buff<<8;
 		FLASH_ProgramHalfWord(flash_addr, Data_SD);					//FLSAH写入按我测试最低只能16位写入
-	
 		p = *(uint32_t *)(flash_addr);
 		if(p != Data_SD)
 		{
@@ -145,6 +163,12 @@ uint8_t Write_flash(uint32_t num_size,uint8_t *Data)
 		}	
 		Data++;
 		flash_addr+=2;
+	}
+	if(num_size%2 != 0)																		//如果是单数字节的升级文件，最后一次写入
+	{
+		Data_SD = *Data;
+		Data_SD |= 0xff00;
+		FLASH_ProgramHalfWord(flash_addr+num_size,Data_SD);
 	}
 	FLASH_Lock();
 	return 1;
@@ -160,16 +184,10 @@ void delay(unsigned int time)
 
 int main(void)
 {
-//	uint32_t i;
-//	uint8_t p;
 	uint8_t Erase_flag = 0;
 	uint8_t Write_flag = 0;
 	Init_Drive();
 	SD_Card_Test();			//此程序执行完不能马上转跳主程序，否则会出错
-	ON_LED_Red;
-	delay(100);
-	OFF_LED;
-	delay(100);
 
 /*这里是查询（FLASH_APP1_ADDR）转跳主程序地址起点开始的1300个字
 	节 因为升级程序只有1200多个字节，所以1300次循环足够查询主任务区的代码
@@ -184,29 +202,34 @@ int main(void)
 //	}
 /************************************************************************/
 
-
-	printf("开始擦除内部FLASH...\n");
-	Erase_flag = Erase_flash(10);
-	if(Erase_flag)
-	{
-		printf("开始升级程序...\n");
-		Write_flag = Write_flash(fnum,ReadBuffer);
-		if(Write_flag)
-		{
-			printf("升级成功！\n");
-		}
-		else
-		{
-			printf("升级失败！\n");
-		}
-	}
-	else
-	{
-		printf("擦除扇区失败！\n");
-	}
 	while(1)
 	{
-		
+		if(Key1_Read())
+		{
+			LED_R_control(1);
+			TIM_Cmd(TIM_X, DISABLE);
+			printf("开始擦除内部FLASH...\n");
+			Erase_flag = Erase_flash(10);
+			if(Erase_flag)
+			{
+				printf("开始升级程序...\n");
+				Write_flag = Write_flash(fnum,ReadBuffer);
+				if(Write_flag)
+				{
+					printf("升级成功！\n马上开始主任务....\n");
+					Resource_release();
+					IAP_load( FLASH_APP1_ADDR );
+				}
+				else
+				{
+					printf("升级失败！\n");
+				}
+			}
+			else
+			{
+				printf("擦除扇区失败！\n");
+			}
+		}
 	}
 }
 

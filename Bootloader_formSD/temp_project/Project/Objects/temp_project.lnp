@@ -36,6 +36,7 @@
 ".\objects\sdio_test.o"
 ".\objects\usart_dirve.o"
 ".\objects\tim_dirve.o"
+".\objects\buz_dirve.o"
 ".\objects\diskio.o"
 ".\objects\ff.o"
 --library_type=microlib --strict --scatter ".\Objects\temp_project.sct"

@@ -46,3 +46,4 @@
 .\objects\tim_dirve.o: ..\User\SDIO_Drive\bsp_sdio_sdcard.h
 .\objects\tim_dirve.o: ..\User\USART_Dirve\USART_Dirve.h
 .\objects\tim_dirve.o: ..\User\TIM_Dirve\TIM_Dirve.h
+.\objects\tim_dirve.o: ..\User\BUZ_Drive\BUZ_Dirve.h

@@ -37,13 +37,21 @@ void TIMx_config(void)
 
 void TIM6_IRQHandler (void)
 {
-	static uint32_t time;
+	static uint32_t time,LED_flag_add;
 	if(TIM_GetFlagStatus(TIM_X, TIM_FLAG_Update)!=RESET)
 	{
 		time++;
+		LED_flag_add++;
+		if(LED_flag_add == 100)
+		{
+			LED_G_TOGGLE;		
+			LED_flag_add = 0;
+		}
 		if(time==10000)
 		{
-			ON_LED_Red;
+
+			time = 0;
+			Resource_release();
 			IAP_load( FLASH_APP1_ADDR );
 		}
 		TIM_ClearITPendingBit(TIM_X, TIM_FLAG_Update);

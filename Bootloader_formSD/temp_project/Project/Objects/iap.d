@@ -46,4 +46,5 @@
 .\objects\iap.o: ..\User\SDIO_Drive\bsp_sdio_sdcard.h
 .\objects\iap.o: ..\User\USART_Dirve\USART_Dirve.h
 .\objects\iap.o: ..\User\TIM_Dirve\TIM_Dirve.h
+.\objects\iap.o: ..\User\BUZ_Drive\BUZ_Dirve.h
 .\objects\iap.o: ..\User\sys\sys.h
